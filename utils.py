@@ -15,7 +15,7 @@ def resource_path(relative_path):
 
 def get_db_path():
 
-    develop = True
+    develop = False
     if develop:
         return resource_path("Database/CpG_data.db")
     
