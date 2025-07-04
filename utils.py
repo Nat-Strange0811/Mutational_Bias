@@ -9,9 +9,14 @@ from gui.gui_utils import *
 from Bio import Entrez, SeqIO
 
 def resource_path(relative_path):
-    if getattr(sys, 'frozen', False):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
+    """Get the absolute path to a resource, for dev and for PyInstaller executable."""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = Path(sys._MEIPASS)
+    except AttributeError:
+        # Normal development environment
+        base_path = Path(__file__).parent
+    return base_path / relative_path
 
 def get_db_path():
 

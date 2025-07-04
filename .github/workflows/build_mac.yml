@@ -1,0 +1,33 @@
+name: Build macOS app
+
+on:
+  push:
+    branches:
+      - main  # or replace with your default branch (e.g. master)
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -r mac_requirements.txt
+
+      - name: Build app with py2app
+        run: python3 setup.py py2app
+
+      - name: Upload built app
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyBioApp-macOS
+          path: dist/
