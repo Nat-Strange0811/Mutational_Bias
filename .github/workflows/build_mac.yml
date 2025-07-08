@@ -3,7 +3,7 @@ name: Build macOS app
 on:
   push:
     branches:
-      - main  # or replace with your default branch (e.g. master)
+      - main
 
 jobs:
   build:
@@ -25,6 +25,10 @@ jobs:
 
       - name: Build app with py2app
         run: python3 setup.py py2app
+
+      - name: Try launching app in CI (debugging)
+        run: |
+          ./dist/MyBioApp.app/Contents/MacOS/MyBioApp || true
 
       - name: Upload built app
         uses: actions/upload-artifact@v4
