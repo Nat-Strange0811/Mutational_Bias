@@ -28,7 +28,7 @@ jobs:
 
       - name: Try launching app in CI (debugging)
         run: |
-          ./dist/MyBioApp.app/Contents/MacOS/MyBioApp || true
+          ./dist/MyBioApp.app/Contents/MacOS/MyBioApp --test || true
 
       - name: Upload built app
         uses: actions/upload-artifact@v4
