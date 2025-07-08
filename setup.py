@@ -7,7 +7,6 @@ OPTIONS = {
     'argv_emulation': True,
     'includes': ['Bio', 'numpy', 'tkinter'],  # Use 'includes' instead of 'packages'
     'packages': [],  # Leave empty unless you're bundling folders/modules
-    'iconfile': 'icon.icns',  # Optional: only if you have a custom icon
     'plist': {
         'CFBundleName': 'MyBioApp',
         'CFBundleDisplayName': 'MyBioApp',
