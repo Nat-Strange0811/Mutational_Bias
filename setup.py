@@ -7,10 +7,7 @@ OPTIONS = {
     'argv_emulation': True,
     'includes': ['tkinter'],
     'packages': ['Bio', 'numpy', 'appdirs'],
-    'resources': [
-        '/System/Library/Frameworks/Tk.framework',
-        '/System/Library/Frameworks/Tcl.framework'
-    ],
+    'resources': [],
     'plist': {
         'CFBundleName': 'MyBioApp',
         'CFBundleDisplayName': 'MyBioApp',
