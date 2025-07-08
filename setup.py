@@ -5,8 +5,12 @@ DATA_FILES = []
 
 OPTIONS = {
     'argv_emulation': True,
-    'includes': ['Bio', 'numpy', 'tkinter'],  # Use 'includes' instead of 'packages'
-    'packages': [],  # Leave empty unless you're bundling folders/modules
+    'includes': ['tkinter'],
+    'packages': ['Bio', 'numpy', 'appdirs'],
+    'resources': [
+        '/System/Library/Frameworks/Tk.framework',
+        '/System/Library/Frameworks/Tcl.framework'
+    ],
     'plist': {
         'CFBundleName': 'MyBioApp',
         'CFBundleDisplayName': 'MyBioApp',
@@ -15,7 +19,6 @@ OPTIONS = {
         'CFBundleShortVersionString': '1.0.0',
         'NSHighResolutionCapable': True,
     },
-    'resources': [],  # Add data files if needed
 }
 
 setup(
