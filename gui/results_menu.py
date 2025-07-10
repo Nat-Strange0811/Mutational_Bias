@@ -157,7 +157,7 @@ def launch_results_menu(main_window):
     widgets.append(results_3_checkbox)
 
 
-    main_menu = tk.Menu(main_window)
+    main_menu = build_base_menu(main_window)
     main_menu.add_cascade(label="Home", menu=home_menu)
     main_menu.add_cascade(label="Model Options", menu=model_menu)
     main_menu.add_cascade(label="Filter Options", menu=filter_menu)

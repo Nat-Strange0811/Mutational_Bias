@@ -24,7 +24,7 @@ def launch_mutations_menu(main_window):
     main_window.columnconfigure(0, weight=1)
 
     #Define the menu
-    main_menu = tk.Menu(main_window)
+    main_menu = build_base_menu(main_window)
 
     home_menu = tk.Menu(main_window, tearoff=0)
     filter_menu = tk.Menu(main_window, tearoff=0)
