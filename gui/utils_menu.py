@@ -11,13 +11,20 @@ def launch_utility_functions_menu(main_window):
     main_window.rowconfigure(0, weight=1)
     main_window.columnconfigure(0, weight=1)
 
-    main_menu = tk.Menu(main_window)
+    home_menu = tk.Menu(main_window, tearoff=0)
+    add_data_menu = tk.Menu(main_window, tearoff=0)
+    manage_database_menu = tk.Menu(main_window, tearoff=0)
     from gui.HomePage import create_home_page
-    main_menu.add_command(label="Home", command=lambda: create_home_page(main_window))
-    main_menu.add_command(label = "Add Data from CSV", command = lambda: add_data_from_csv(main_window))
-    main_menu.add_command(label = "Add DNA Sequences from GenBank", command = lambda: add_dna_sequences_from_genbank(main_window))
-    main_menu.add_command(label = "Import Database", command = lambda: import_database(main_window))
-    main_menu.add_command(label = "Export Database", command = lambda: export_database(main_window))
+    home_menu.add_command(label="Home", command=lambda: create_home_page(main_window))
+    add_data_menu.add_command(label = "Add Data from CSV", command = lambda: add_data_from_csv(main_window))
+    add_data_menu.add_command(label = "Add DNA Sequences from GenBank", command = lambda: add_dna_sequences_from_genbank(main_window))
+    manage_database_menu.add_command(label = "Import Database", command = lambda: import_database(main_window))
+    manage_database_menu.add_command(label = "Export Database", command = lambda: export_database(main_window))
+
+    main_menu = tk.Menu(main_window)
+    main_menu.add_cascade(label="Home", menu=home_menu)
+    main_menu.add_cascade(label="Add Data from CSV/Genbank", menu=add_data_menu)
+    main_menu.add_cascade(label="Import/Export Database", menu=manage_database_menu)
     main_window.config(menu=main_menu)
 
     rows = 11

@@ -25,13 +25,23 @@ def launch_mutations_menu(main_window):
 
     #Define the menu
     main_menu = tk.Menu(main_window)
+
+    home_menu = tk.Menu(main_window, tearoff=0)
+    filter_menu = tk.Menu(main_window, tearoff=0)
+    edit_menu = tk.Menu(main_window, tearoff=0) 
+
     from gui.HomePage import create_home_page
-    main_menu.add_command(label = "Home", command = lambda: create_home_page(main_window))
-    main_menu.add_command(label = "Search", command = lambda: filter_table(frame, initial_query, 4, 1, 7, widgets_hold, filterable_column_names))
-    main_menu.add_command(label = "Clear", command = lambda: create_table(frame, initial_query, 4, 1, 7, widgets = widgets_hold))
-    main_menu.add_command(label = "Add", command = lambda: add_entry(main_window, "Mutations"))
-    main_menu.add_command(label = "Delete", command = lambda: delete_selected_rows("Mutations"))
-    main_menu.add_command(label = "Edit", command = lambda: edit_selected_rows("Mutations", frame, initial_query, 4, 1, 7, widgets_hold, filterable_column_names))
+    home_menu.add_command(label = "Home", command = lambda: create_home_page(main_window))
+    filter_menu.add_command(label = "Search", command = lambda: filter_table(frame, initial_query, 4, 1, 7, widgets_hold, filterable_column_names))
+    filter_menu.add_command(label = "Clear", command = lambda: create_table(frame, initial_query, 4, 1, 7, widgets = widgets_hold))
+    edit_menu.add_command(label = "Add", command = lambda: add_entry(main_window, "Mutations"))
+    edit_menu.add_command(label = "Delete", command = lambda: delete_selected_rows("Mutations"))
+    edit_menu.add_command(label = "Edit", command = lambda: edit_selected_rows("Mutations", frame, initial_query, 4, 1, 7, widgets_hold, filterable_column_names))
+    
+    main_menu.add_cascade(label="Home", menu=home_menu)
+    main_menu.add_cascade(label="Filter Options", menu=filter_menu)
+    main_menu.add_cascade(label="Edit Options", menu=edit_menu)
+
     main_window.config(menu=main_menu)
 
     #Define the number of rows and columns in the frame and configure them to expand

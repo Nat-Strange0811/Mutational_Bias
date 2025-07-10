@@ -16,15 +16,18 @@ def launch_results_menu(main_window):
     main_window.rowconfigure(0, weight=1)
     main_window.columnconfigure(0, weight=1)
 
-    main_menu = tk.Menu(main_window)
+    home_menu = tk.Menu(main_window, tearoff=0)
+    model_menu = tk.Menu(main_window, tearoff=0)
+    filter_menu = tk.Menu(main_window, tearoff=0)
+    
     from gui.HomePage import create_home_page
-    main_menu.add_command(label="Home", command=lambda: create_home_page(main_window))
-    main_menu.add_command(label = "Search", command = lambda: filter_table(frame, initial_query, 4, 1, 7, widgets, filterable_column_names, table_name = "Results"))
-    main_menu.add_command(label = "Clear", command = lambda: create_table(frame, initial_query, 4, 1, 7, widgets = widgets, table_name = "Results"))
-    main_menu.add_command(label = "Run Model 1", command = lambda: run_model(main_window, ["Model_1"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
-    main_menu.add_command(label = "Run Model 2", command = lambda: run_model(main_window, ["Model_2"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
-    main_menu.add_command(label = "Run Model 3", command = lambda: run_model(main_window, ["Model_3"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
-    main_menu.add_command(label = "Run All Models", command = lambda: run_model(main_window, ["Model_1", "Model_2", "Model_3"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
+    home_menu.add_command(label="Home", command=lambda: create_home_page(main_window))
+    filter_menu.add_command(label = "Search", command = lambda: filter_table(frame, initial_query, 4, 1, 7, widgets, filterable_column_names, table_name = "Results"))
+    filter_menu.add_command(label = "Clear", command = lambda: create_table(frame, initial_query, 4, 1, 7, widgets = widgets, table_name = "Results"))
+    model_menu.add_command(label = "Run Model 1", command = lambda: run_model(main_window, ["Model_1"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
+    model_menu.add_command(label = "Run Model 2", command = lambda: run_model(main_window, ["Model_2"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
+    model_menu.add_command(label = "Run Model 3", command = lambda: run_model(main_window, ["Model_3"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
+    model_menu.add_command(label = "Run All Models", command = lambda: run_model(main_window, ["Model_1", "Model_2", "Model_3"], frame, initial_query, 4, 1, 7, widgets, filterable_column_names))
     rows = 11
     columns = 9
     for i in range(rows):
@@ -154,7 +157,10 @@ def launch_results_menu(main_window):
     widgets.append(results_3_checkbox)
 
 
-
+    main_menu = tk.Menu(main_window)
+    main_menu.add_cascade(label="Home", menu=home_menu)
+    main_menu.add_cascade(label="Model Options", menu=model_menu)
+    main_menu.add_cascade(label="Filter Options", menu=filter_menu)
     main_window.config(menu=main_menu)
 
     create_table(frame, initial_query, 4, 1, 7, widgets = widgets, table_name = "Results")

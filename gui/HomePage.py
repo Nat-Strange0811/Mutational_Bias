@@ -20,14 +20,16 @@ def create_home_page(main_window):
     main_window.geometry("1000x700")
     main_window.configure(background="#e7e7e7")
     
-    main_menu = tk.Menu(main_window)
+    search_menu = tk.Menu(main_window,tearoff=0)
+    analysis_menu = tk.Menu(main_window, tearoff=0)
+    utils_menu = tk.Menu(main_window, tearoff=0)
 
-    main_menu.add_command(label = "Species", command = lambda: create_search_menu(main_window, "Species"))
-    main_menu.add_command(label = "Mutations", command = lambda: create_search_menu(main_window, "Mutations"))
-    main_menu.add_command(label = "DNA Sequences", command = lambda: create_search_menu(main_window, "DNA Sequences"))
-    main_menu.add_command(label = "Results", command = lambda: create_search_menu(main_window, "Results"))
-    main_menu.add_command(label = "Analysis", command = lambda: create_search_menu(main_window, "Analysis"))
-    main_menu.add_command(label="Utility Functions", command = lambda: create_search_menu(main_window, "Utility Functions"))  
+    search_menu.add_command(label = "Species", command = lambda: create_search_menu(main_window, "Species"))
+    search_menu.add_command(label = "Mutations", command = lambda: create_search_menu(main_window, "Mutations"))
+    search_menu.add_command(label = "DNA Sequences", command = lambda: create_search_menu(main_window, "DNA Sequences"))
+    analysis_menu.add_command(label = "Results", command = lambda: create_search_menu(main_window, "Results"))
+    analysis_menu.add_command(label = "Analysis", command = lambda: create_search_menu(main_window, "Analysis"))
+    utils_menu.add_command(label = "Utility Functions", command = lambda: create_search_menu(main_window, "Utility Functions"))  
 
     # Create a heading label
     heading = tk.Label(main_window,
@@ -56,7 +58,10 @@ def create_home_page(main_window):
     description.pack()
 
 
-
+    main_menu = tk.Menu(main_window)
+    main_menu.add_cascade(label = "Search/Edit Database", menu = search_menu)
+    main_menu.add_cascade(label = "Run Analysis", menu = analysis_menu)
+    main_menu.add_cascade(label = "Utility Functions", menu = utils_menu)
     main_window.config(menu=main_menu)
     
 def create_search_menu(main_window, table_name):

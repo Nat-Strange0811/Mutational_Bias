@@ -114,11 +114,14 @@ def add_entry(main_window, table_name):
 
 
         #add menu items
-        add_menu = tk.Menu(add_window)
+        add_menu = tk.Menu(add_window, tearoff=0)
         add_menu.add_command(label="Save", command=lambda: add_save())
         add_menu.add_command(label="Clear", command=lambda: add_clear())
         add_menu.add_command(label="Back", command=lambda: add_cancel())
-        add_window.config(menu=add_menu)
+
+        main_menu = tk.Menu(add_window)
+        main_menu.add_cascade(label="Options", menu=add_menu)
+        add_window.config(menu=main_menu)
 
         #create structure to add entires, we create a tale like structure, using canvas, frame, scrollbar and entry widgets, enabling retrieval
         #of input data.
