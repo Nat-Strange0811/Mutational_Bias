@@ -35,11 +35,11 @@ jobs:
       - name: Compress app as ZIP (preserve structure & permissions)
         run: |
           cd dist
-          zip -r -y MyBioApp-macOS.zip MyBioApp.app
+          zip -r -y "Mutational Bias-macOS.zip" "Mutational Bias.app"
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/MyBioApp-macOS.zip
+          files: dist/Mutational\ Bias-macOS.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
