@@ -65,10 +65,15 @@ def create_home_page(main_window):
 
 
     main_menu = tk.Menu(main_window)
+    print("added drop search")
     main_menu.add_cascade(label = "Search/Edit Database", menu = search_menu)
+    print("added drop analysis")
     main_menu.add_cascade(label = "Run Analysis", menu = analysis_menu)
+    print("added drop utils")
     main_menu.add_cascade(label = "Utility Functions", menu = utils_menu)
+    print("config")
     main_window.config(menu=main_menu)
+    print("completed")
     
 def create_search_menu(main_window, table_name):
     """
