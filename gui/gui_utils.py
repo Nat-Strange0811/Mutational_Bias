@@ -7,6 +7,7 @@ import re
 from Models.model1 import Model1
 from Models.model2 import Model2
 from Models.model3 import Model3
+import sys
 
 def clear_window(window):
     for widget in window.winfo_children():
@@ -609,4 +610,13 @@ def show_row_details(event):
     
     details_window.grid_columnconfigure(1, weight=1)
     
+def build_base_menu(window):
+    menu = tk.Menu(window)
 
+    # Add dummy Apple menu if on macOS
+    if sys.platform == "darwin":
+        apple_menu = tk.Menu(menu, name='apple')
+        apple_menu.add_command(label="About Mutational Bias")
+        menu.add_cascade(menu=apple_menu)
+
+    return menu

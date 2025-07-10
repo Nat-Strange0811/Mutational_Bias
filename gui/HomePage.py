@@ -1,5 +1,5 @@
 import tkinter as tk
-from gui.gui_utils import clear_window
+from gui.gui_utils import *
 
 from gui.search_menu_options import species_menu, mutations_menu, dna_sequences_menu
 from gui import results_menu
@@ -66,7 +66,7 @@ def create_home_page(main_window):
     description.pack()
     print("added description")
 
-    main_menu = tk.Menu(main_window)
+    main_menu = build_base_menu(main_window)
     print("added drop search")
     main_menu.add_cascade(label = "Search/Edit Database", menu = search_menu)
     print("added drop analysis")
