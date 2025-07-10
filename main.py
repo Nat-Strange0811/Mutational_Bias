@@ -14,6 +14,7 @@ def main():
 
     window = tk.Tk()
     main_menu = build_base_menu(window)
+    window.main_menu = main_menu
     window.config(menu=main_menu)
 
     create_home_page(window)
