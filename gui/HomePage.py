@@ -74,7 +74,8 @@ def create_home_page(main_window):
     print("added drop utils")
     main_menu.add_cascade(label = "Utility Functions", menu = utils_menu)
     print("config")
-    main_window.after(0, lambda:main_window.config(menu=main_menu))
+    main_window.config(menu=main_menu)
+
 
     print("completed")
     
