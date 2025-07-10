@@ -36,6 +36,7 @@ def create_home_page(main_window):
     analysis_menu.add_command(label = "Analysis", command = lambda: create_search_menu(main_window, "Analysis"))
     print("Utility Functions")
     utils_menu.add_command(label = "Utility Functions", command = lambda: create_search_menu(main_window, "Utility Functions"))  
+    print("finished menu creation")
 
     # Create a heading label
     heading = tk.Label(main_window,
@@ -48,6 +49,7 @@ def create_home_page(main_window):
                        padx = 20,
                        pady = 20)
     heading.pack()
+    print("added heading")
 
     description = tk.Label(main_window,
                             text = "Welcome to the Mutational Bias Analysis Tool!\n\n"
@@ -62,7 +64,7 @@ def create_home_page(main_window):
                             padx = 20,
                             pady = 20)
     description.pack()
-
+    print("added description")
 
     main_menu = tk.Menu(main_window)
     print("added drop search")
