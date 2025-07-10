@@ -5,13 +5,14 @@ DATA_FILES = ['Database/CpG_data.db']
 
 OPTIONS = {
     'argv_emulation': True,
-    'includes': ['tkinter'],
+    'includes': ['tkinter', 'sqlite3', 'os', 'shutil', 'pathlib'],
     'packages': ['Bio', 'numpy', 'appdirs'],
-    'resources': ['Database/CpG_data.db'],
+    'resources': ['Database'],
+    'compressed' : False,
     'plist': {
-        'CFBundleName': 'MyBioApp',
-        'CFBundleDisplayName': 'MyBioApp',
-        'CFBundleIdentifier': 'com.yourname.mybioapp',
+        'CFBundleName': 'Mutational Bias',
+        'CFBundleDisplayName': 'Mutational Bias',
+        'CFBundleIdentifier': 'com.yourname.mutationalbias',
         'CFBundleVersion': '1.0.0',
         'CFBundleShortVersionString': '1.0.0',
         'NSHighResolutionCapable': True,
