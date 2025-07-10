@@ -1,13 +1,13 @@
 from setuptools import setup
 
 APP = ['main.py']
-DATA_FILES = []
+DATA_FILES = ['Database/CpG_data.db']
 
 OPTIONS = {
     'argv_emulation': True,
     'includes': ['tkinter'],
     'packages': ['Bio', 'numpy', 'appdirs'],
-    'resources': [],
+    'resources': ['Database/CpG_data.db'],
     'plist': {
         'CFBundleName': 'MyBioApp',
         'CFBundleDisplayName': 'MyBioApp',
