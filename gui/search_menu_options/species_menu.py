@@ -24,7 +24,7 @@ def launch_species_menu(main_window):
     main_window.columnconfigure(0, weight=1)
 
     #Define the menu
-    main_menu = build_base_menu(main_window)
+    main_menu = main_window.main_menu
 
     home_menu = tk.Menu(main_window, tearoff=0)
     filter_menu = tk.Menu(main_window, tearoff=0)
@@ -41,8 +41,6 @@ def launch_species_menu(main_window):
     main_menu.add_cascade(label="Home", menu=home_menu)
     main_menu.add_cascade(label="Filter Options", menu=filter_menu)
     main_menu.add_cascade(label="Edit Options", menu=edit_menu)
-
-    main_window.config(menu=main_menu)
 
     #Define the number of rows and columns in the frame and configure them to expand
     rows = 11

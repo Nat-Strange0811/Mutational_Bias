@@ -9,6 +9,5 @@ def launch_analysis_menu(main_window):
     from gui.HomePage import create_home_page
     home_menu.add_command(label="Home", command=lambda: create_home_page(main_window))
 
-    main_menu = build_base_menu(main_window)
+    main_menu = main_window.main_menu
     main_menu.add_cascade(label="Home", menu=home_menu)
-    main_window.config(menu=main_menu)

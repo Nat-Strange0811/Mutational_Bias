@@ -66,15 +66,13 @@ def create_home_page(main_window):
     description.pack()
     print("added description")
 
-    main_menu = build_base_menu(main_window)
+    main_menu = main_window.main_menu
     print("added drop search")
     main_menu.add_cascade(label = "Search/Edit Database", menu = search_menu)
     print("added drop analysis")
     main_menu.add_cascade(label = "Run Analysis", menu = analysis_menu)
     print("added drop utils")
     main_menu.add_cascade(label = "Utility Functions", menu = utils_menu)
-    print("config")
-    main_window.config(menu=main_menu)
 
 
     print("completed")

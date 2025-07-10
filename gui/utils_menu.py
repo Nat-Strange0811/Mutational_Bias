@@ -21,11 +21,10 @@ def launch_utility_functions_menu(main_window):
     manage_database_menu.add_command(label = "Import Database", command = lambda: import_database(main_window))
     manage_database_menu.add_command(label = "Export Database", command = lambda: export_database(main_window))
 
-    main_menu = build_base_menu(main_window)
+    main_menu = main_window.main_menu
     main_menu.add_cascade(label="Home", menu=home_menu)
     main_menu.add_cascade(label="Add Data from CSV/Genbank", menu=add_data_menu)
     main_menu.add_cascade(label="Import/Export Database", menu=manage_database_menu)
-    main_window.config(menu=main_menu)
 
     rows = 11
     columns = 9

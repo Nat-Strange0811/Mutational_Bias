@@ -119,9 +119,8 @@ def add_entry(main_window, table_name):
         add_menu.add_command(label="Clear", command=lambda: add_clear())
         add_menu.add_command(label="Back", command=lambda: add_cancel())
 
-        main_menu = build_base_menu(main_window)
+        main_menu = main_window.main_menu
         main_menu.add_cascade(label="Options", menu=add_menu)
-        add_window.config(menu=main_menu)
 
         #create structure to add entires, we create a tale like structure, using canvas, frame, scrollbar and entry widgets, enabling retrieval
         #of input data.
