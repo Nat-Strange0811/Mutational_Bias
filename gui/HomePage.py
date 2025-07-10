@@ -24,11 +24,17 @@ def create_home_page(main_window):
     analysis_menu = tk.Menu(main_window, tearoff=0)
     utils_menu = tk.Menu(main_window, tearoff=0)
 
+    print("Species")
     search_menu.add_command(label = "Species", command = lambda: create_search_menu(main_window, "Species"))
+    print("Mutations")
     search_menu.add_command(label = "Mutations", command = lambda: create_search_menu(main_window, "Mutations"))
+    print("DNA Sequences")
     search_menu.add_command(label = "DNA Sequences", command = lambda: create_search_menu(main_window, "DNA Sequences"))
+    print("Results")
     analysis_menu.add_command(label = "Results", command = lambda: create_search_menu(main_window, "Results"))
+    print("Analysis")
     analysis_menu.add_command(label = "Analysis", command = lambda: create_search_menu(main_window, "Analysis"))
+    print("Utility Functions")
     utils_menu.add_command(label = "Utility Functions", command = lambda: create_search_menu(main_window, "Utility Functions"))  
 
     # Create a heading label
