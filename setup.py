@@ -5,7 +5,7 @@ DATA_FILES = ['Database/CpG_data.db']
 
 OPTIONS = {
     'argv_emulation': True,
-    'includes': ['tkinter', 'sqlite3', 'os', 'shutil', 'pathlib'],
+    'includes': ['tkinter', 'sqlite3', 'os', 'shutil', 'pathlib', 'psygog2', 'decimal'],
     'packages': ['Bio', 'numpy', 'appdirs'],
     'resources': ['Database'],
     'compressed' : False,
