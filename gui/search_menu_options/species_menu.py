@@ -80,10 +80,10 @@ def launch_species_menu(main_window):
 
     #Initialise a query to fetch all of the species data
     initial_query = '''SELECT
-                        Species.Class,
-                        Species.Scientific_Name AS [Scientific Name], 
-                        Species.Common_Name AS [Common Name], 
-                        Species.Domesticated 
+                        Species.Class AS "Class",
+                        Species.Scientific_Name AS "Scientific Name", 
+                        Species.Common_Name AS "Common Name", 
+                        Species.Domesticated AS "Domesticated" 
                     FROM 
                         Species
                     WHERE

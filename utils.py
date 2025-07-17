@@ -7,6 +7,7 @@ from tkinter import filedialog, messagebox, simpledialog
 import csv
 from gui.gui_utils import *
 from Bio import Entrez, SeqIO
+import decimal
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):  # PyInstaller (Windows)
@@ -80,7 +81,7 @@ def add_data_from_csv(main_window):
                             {table_name}
                             ({', '.join(column_lookup[table_name])})
                         VALUES
-                            ({', '.join(['?'] * len(column_lookup[table_name]))})'''
+                            ({', '.join(['%s'] * len(column_lookup[table_name]))})'''
             
             if entry_data == None:
                 continue
@@ -134,7 +135,7 @@ def add_dna_sequences_from_genbank(main_window):
                             DNA_Sequences
                             (Species_ID, Gene, DNA_Sequence, Splice_Site)
                         VALUES
-                            (?, ?, ?, ?)
+                            (%s, %s, %s, %s)
                         '''
             splice_site = simpledialog.askstring("Splice Site", "Enter the splice site (if applicable, otherwise leave blank):", parent = main_window)
             if splice_site == "":
@@ -150,7 +151,7 @@ def add_dna_sequences_from_genbank(main_window):
                             Species
                             (Class, Scientific_Name, Common_Name, Domesticated)
                         VALUES
-                            (?, ?, ?, ?)
+                            (%s, %s, %s, %s)
                         '''
             entry_data = (class_name, scientific_name, common_name, domesticated)
             add_row(query, entry_data)
@@ -174,13 +175,43 @@ def import_database(main_window):
         title="Select Database File",
         filetypes=[("Database files", "*.db")]
     )
+    tables = ["species", "mutations", "dna_sequences", "results"]
+
+    data_type_lookup = {
+        "species": ["TEXT", "TEXT", "TEXT", "INTEGER", "TEXT"],
+        "mutations": ["INTEGER", "INTEGER", "INTEGER", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"],
+        "dna_sequences": ["INTEGER", "INTEGER", "TEXT", "TEXT", "TEXT"],
+        "results" : ["INTEGER", "INTEGER", "NUMERIC(4,2)", "NUMERIC(4,2)", "NUMERIC(4,2)"]
+    }
+
 
     if not file_path:
         return
     
     try:
-        shutil.copyfile(file_path, get_db_path())
+        sqlite_conn = sqlite3.connect(file_path)
+        sqlite_cursor = sqlite_conn.cursor()
+        sqlpg_conn = set_connection()
+        sqlpg_cursor = sqlpg_conn.cursor()
+        for table in tables:
+            query = f"SELECT * FROM {table}"
+            sqlite_cursor.execute(query)
+            rows = sqlite_cursor.fetchall()
+            columns = [description[0] for description in sqlite_cursor.description]
+            destroy = f"DROP TABLE IF EXISTS {table}"
+            sqlpg_cursor.execute(destroy)
+            create = f"CREATE TABLE IF NOT EXISTS {table} ({', '.join([f'{col} {data_type_lookup[table][i]}' for i,col in enumerate(columns)])})"
+            sqlpg_cursor.execute(create)
+            if rows:
+                for row in rows:
+                    cleaned_row = [str(value) if isinstance(value, decimal.Decimal) else value for value in row]
+                    query = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({', '.join(['%s'] * len(columns))})"
+                    sqlpg_cursor.execute(query, cleaned_row)
+
+        sqlpg_conn.commit()
+
     except Exception as e:
+        print(e)
         messagebox.showerror("Error", f"An error occurred while importing the database: {e}\n\nPlease contact Nat")
         return
 
@@ -190,13 +221,42 @@ def export_database(main_window):
     """
     Exports the database to a file.
     """
+    tables = ["species", "mutations", "dna_sequences", "results"]
+
+    data_type_lookup = {
+        "species": ["TEXT", "TEXT", "TEXT", "INTEGER", "TEXT"],
+        "mutations": ["INTEGER", "INTEGER", "INTEGER", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"],
+        "dna_sequences": ["INTEGER", "INTEGER", "TEXT", "TEXT", "TEXT"],
+        "results" : ["INTEGER", "INTEGER", "NUMERIC(4,2)", "NUMERIC(4,2)", "NUMERIC(4,2)"]
+    }
+
     folder_path = filedialog.askdirectory(
         title="Select Export Folder")
     
     if not folder_path:
         return
     try:
-        shutil.copyfile(get_db_path(), os.path.join(folder_path, "Mutational_Bias.db"))
+        sqlite_conn = sqlite3.connect(os.path.join(folder_path, "Mutational_Bias.db"))
+        sqlite_cursor = sqlite_conn.cursor()
+        sqlpg_conn = set_connection()
+        sqlpg_cursor = sqlpg_conn.cursor()
+        for table in tables:
+            query = f"SELECT * FROM {table}"
+            sqlpg_cursor.execute(query)
+            rows = sqlpg_cursor.fetchall()
+            columns = [description[0] for description in sqlpg_cursor.description]
+            destroy = f"DROP TABLE IF EXISTS {table}"
+            sqlite_cursor.execute(destroy)
+            create = f"CREATE TABLE IF NOT EXISTS {table} ({', '.join([f'{col} {data_type_lookup[table][i]}' for i,col in enumerate(columns)])})"
+            sqlite_cursor.execute(create)
+            if rows:
+                for row in rows:
+                    cleaned_row = [str(value) if value is not None else '' for value in row]
+                    query = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({', '.join(['?'] * len(columns))})"
+                    sqlite_cursor.execute(query, cleaned_row)
+
+        sqlite_conn.commit()
+
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred while exporting the database: {e}\n\nPlease contact Nat")
         return

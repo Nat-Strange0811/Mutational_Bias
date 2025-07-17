@@ -82,13 +82,13 @@ def launch_mutations_menu(main_window):
 
     #Initialise a query to fetch all of the species data
     initial_query = '''SELECT 
-                        Species.Scientific_Name AS [Scientific Name],
-                        Mutations.Gene,
-                        Mutations.Nucleotide_Change AS [Nucleotide Change],
-                        Mutations.Amino_Acid_Change AS [Amino Acid Change],
-                        Mutations.CpG_Associated AS [CpG Associated],
-                        Mutations.Gain_of_Function AS [Gain of Function],
-                        Mutations.URL
+                        Species.Scientific_Name AS "Scientific Name",
+                        Mutations.Gene AS "Gene",
+                        Mutations.Nucleotide_Change AS "Nucleotide Change",
+                        Mutations.Amino_Acid_Change AS "Amino Acid Change",
+                        Mutations.CpG_Associated AS "CpG Associated",
+                        Mutations.Gain_of_Function AS "Gain of Function",
+                        Mutations.URL AS "URL"
                     FROM 
                         Mutations
                     LEFT JOIN

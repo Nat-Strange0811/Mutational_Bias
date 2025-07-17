@@ -10,7 +10,7 @@ def main():
         print("Test run: app starts correctly.")
         sys.exit(0)
 
-    set_connection(sqlite3.connect(get_db_path()))
+    set_connection()
 
     window = tk.Tk()
     main_menu = build_base_menu(window)

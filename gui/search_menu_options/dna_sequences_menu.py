@@ -83,10 +83,10 @@ def launch_dna_sequences_menu(main_window):
 
     #Initialise a query to fetch all of the species data
     initial_query = '''SELECT 
-                        Species.Scientific_Name AS [Scientific Name],
-                        DNA_Sequences.Gene,
-                        DNA_Sequences.DNA_Sequence AS [DNA Sequence],
-                        DNA_Sequences.Splice_Site
+                        Species.Scientific_Name AS "Scientific Name",
+                        DNA_Sequences.Gene AS "Gene",
+                        DNA_Sequences.DNA_Sequence AS "DNA Sequence",
+                        DNA_Sequences.Splice_Site AS "Splice Site"
                     FROM 
                         DNA_Sequences
                     LEFT JOIN

@@ -64,11 +64,11 @@ def launch_results_menu(main_window):
     instructions.grid(row=1, column=1, columnspan=7, pady=10)
 
     initial_query = '''SELECT
-                            Species.Scientific_Name as [Scientific Name],
-                            DNA_Sequences.Gene as [Gene],
-                            Results.Model_1 as [Model 1],
-                            Results.Model_2 as [Model 2],
-                            Results.Model_3 as [Model 3]
+                            Species.Scientific_Name as "Scientific Name",
+                            DNA_Sequences.Gene as "Gene",
+                            Results.Model_1 as "Model 1",
+                            Results.Model_2 as "Model 2",
+                            Results.Model_3 as "Model 3"
                         FROM
                             DNA_Sequences
                         LEFT JOIN

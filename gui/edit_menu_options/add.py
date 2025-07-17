@@ -59,7 +59,7 @@ def add_entry(main_window, table_name):
                             {table_name}
                             ({', '.join(column_lookup[table_name])})
                         VALUES
-                            ({', '.join(['?'] * len(column_lookup[table_name]))})'''
+                            ({', '.join(['%s'] * len(column_lookup[table_name]))})'''
             
             
             

@@ -8,6 +8,7 @@ from Models.model1 import Model1
 from Models.model2 import Model2
 from Models.model3 import Model3
 import sys
+import psycopg2
 
 def clear_window(window):
     for widget in window.winfo_children():
@@ -16,9 +17,18 @@ def clear_window(window):
     if hasattr(window, 'main_menu'):
         window.main_menu.delete(0, 'end')  # Clear the menu bar if it exists
 
-def set_connection(conn):
+def set_connection():
+    conn = psycopg2.connect(
+        host="ep-hidden-forest-abw473j0-pooler.eu-west-2.aws.neon.tech",
+        dbname="mutational_bias",
+        user="neondb_owner",
+        password="npg_eIGsVp0fuoq9",
+        sslmode="require",
+        port=5432
+    )
     global connection
     connection = conn
+    return conn
 
 def create_table(window, query, xposition = 0, yposition = 0, span = 1, values = None, widgets = None, table_name = None):
     """
@@ -70,7 +80,7 @@ def create_table(window, query, xposition = 0, yposition = 0, span = 1, values =
                 count_3 += 1
     
     if table_name == "Results":
-        table.insert('', tk.END, values = ["************", "Average", average_1 / count_1, average_2 / count_2, average_3 / count_3])
+        table.insert('', tk.END, values = ["************", "Average", average_1 / count_1 if count_1 else 0, average_2 / count_2 if count_2 else 0, average_3 / count_3 if count_3 else 0])
 
     table.grid(row=xposition, column=yposition, pady = 10, sticky='nsew', columnspan= span)
     store.table = table
@@ -88,7 +98,7 @@ def check_and_get_foregin_key(table, value):
                    FROM 
                     Species 
                    WHERE
-                    Scientific_Name = ?'''
+                    Scientific_Name = %s'''
     elif table == "DNA_Sequences":
         query = '''SELECT 
                     DNA_Sequences.DNA_Sequence_ID 
@@ -97,9 +107,9 @@ def check_and_get_foregin_key(table, value):
                 LEFT JOIN 
                     Species on DNA_Sequences.Species_ID = Species.Species_ID 
                 WHERE 
-                    Species.Scientific_Name = ? 
+                    Species.Scientific_Name = %s 
                 AND
-                    DNA_Sequences.Gene = ?'''
+                    DNA_Sequences.Gene = %s'''
     
     cursor = connection.cursor()
     if type(value) not in (tuple, list):
@@ -144,7 +154,7 @@ def fetch_primary_key(row_data, table_name):
             conditions.append(f"{column_names_lookup[table_name][i]} is NULL")
             removals.append('None')
         else:
-            conditions.append(f"{column_names_lookup[table_name][i]} = ?")
+            conditions.append(f"{column_names_lookup[table_name][i]} = %s")
 
     for removal in removals:
         if removal in values:
@@ -195,7 +205,7 @@ def delete_row(table_name, primary_key):
                 DELETE FROM
                     {table_name}
                 WHERE
-                    {primary_key_lookup[table_name]} = ?
+                    {primary_key_lookup[table_name]} = %s
                 '''
     
     if table_name == "Species":
@@ -205,7 +215,7 @@ def delete_row(table_name, primary_key):
                     DELETE FROM
                         {table}
                     WHERE
-                        Species_ID = ?
+                        Species_ID = %s
                     '''
             cursor = connection.cursor()
             cursor.execute(delete_query, primary_key)
@@ -230,6 +240,8 @@ def edit_selected_rows(table_name, window, initial_query, xposition, yposition, 
             label = tk.Label(pop_up_window, text = f"{store.table.heading(i)['text']}")
             label.grid(row=0, column=i, padx=10, pady=5)
             entry = tk.Entry(pop_up_window, width=30)
+            if value == 'None':
+                value = ''
             entry.insert(0, value)
             entry.grid(row=1, column=i, padx=10, pady=5)
 
@@ -273,9 +285,9 @@ def update_row(primary_key, table_name, new_values):
                 UPDATE 
                     {table_name}
                 SET
-                    {', '.join([f"{col} = ?" for col in column_names_lookup[table_name]])}
+                    {', '.join([f"{col} = %s" for col in column_names_lookup[table_name]])}
                 WHERE
-                    {primary_key_lookup[table_name]} = ?
+                    {primary_key_lookup[table_name]} = %s
                 '''
 
     values = new_values + [primary_key]
@@ -301,7 +313,7 @@ def extract_options(table, column):
     Returns:
         list: A list of unique options from the specified column.
     """
-    query = f"SELECT DISTINCT {column} FROM {table}"
+    query = f'SELECT DISTINCT {column} FROM {table}'
     cursor = connection.cursor()
     cursor.execute(query)
     options = [row[0] for row in cursor.fetchall()]
@@ -329,7 +341,7 @@ def filter_table(window, initial_query, xposition, yposition, span, widgets, col
                 value += widgets[i].get()
                 value += '%'  # Add wildcard for LIKE query
                 values.append(value)
-                initial_query += f" AND {column_names[i]} LIKE ?"
+                initial_query += f" AND {column_names[i]} LIKE %s"
         elif widgets[i].winfo_class() == 'Listbox':
             if widgets[i].curselection():
                 selected_indices = widgets[i].curselection()
@@ -337,7 +349,7 @@ def filter_table(window, initial_query, xposition, yposition, span, widgets, col
                 for item in selected_items:
                     
                     values.append(item)
-                initial_query += f" AND {column_names[i]} IN ({', '.join(['?'] * len(selected_items))})"
+                initial_query += f" AND {column_names[i]} IN ({', '.join(['%s'] * len(selected_items))})"
         elif widgets[i].winfo_class() == 'Checkbutton':
             if widgets[i].var.get():
                 initial_query += f" AND {column_names[i]} IS NULL"
@@ -371,7 +383,13 @@ def conditions_check(j, row, table_name):
                 entry_data.append(check)
                 scientific_name = input
             else:
-                return f"Species with Scientific Name '{input}' does not exist in the database, please add it first."
+                add_species(input)
+                check = check_and_get_foregin_key("Species", input)
+                if check:
+                    entry_data.append(check)
+                    scientific_name = input
+                else:
+                    return f"The seperate species information was not added to the database. Please select 'save' before closing the window."
         elif column_lookup[table_name][i] == "DNA_Sequence_ID" and not any(entry == '' for entry in entry_data):
             check = check_and_get_foregin_key("DNA_Sequences", (scientific_name, input))
             if check:
@@ -440,9 +458,9 @@ def run_model(window, model_names, frame, initial_query, xposition, yposition, s
                 UPDATE
                     Results
                 SET
-                    {', '.join([f"{model_name} = ?" for model_name in model_names])}
+                    {', '.join([f"{model_name} = %s" for model_name in model_names])}
                 WHERE
-                    Result_ID = ?
+                    Result_ID = %s
             '''
 
     row_data = []
@@ -482,7 +500,7 @@ def run_model(window, model_names, frame, initial_query, xposition, yposition, s
                     Results
                 ({', '.join(model_names)}, DNA_Sequence_ID)
                 VALUES
-                    ({', '.join(['?'] * len(model_names))}, ?)
+                    ({', '.join(['%s'] * len(model_names))}, %s)
             '''
             results.append(DNA_Sequence_ID)
         else:
@@ -528,7 +546,7 @@ def get_dna_info(DNA_Sequence_ID):
                 FROM
                     DNA_Sequences
                 WHERE
-                    DNA_Sequences.DNA_Sequence_ID = ?
+                    DNA_Sequences.DNA_Sequence_ID = %s
             '''
     
     cursor = connection.cursor()
@@ -554,9 +572,9 @@ def check_mutations(species_id, gene):
                 FROM
                     DNA_Sequences
                 WHERE
-                    Species_ID = ?
+                    Species_ID = %s
                 AND
-                    Gene = ?
+                    Gene = %s
             '''
     
     cursor = connection.cursor()
@@ -569,9 +587,9 @@ def check_mutations(species_id, gene):
                 FROM
                     Mutations
                 WHERE
-                    Species_ID = ?
+                    Species_ID = %s
                 AND
-                    Gene = ?'''
+                    Gene = %s'''
 
     cursor.execute(query, (species_id, gene))
     mutations_IDs = cursor.fetchall()
@@ -582,9 +600,9 @@ def check_mutations(species_id, gene):
                         UPDATE
                             Mutations
                         SET
-                            DNA_Sequence_ID = ?
+                            DNA_Sequence_ID = %s
                         WHERE
-                            Mutation_ID = ?
+                            Mutation_ID = %s
                     '''
 
             cursor.execute(query, (DNA_sequence_ID[0], mutation_ID[0]))
@@ -623,3 +641,56 @@ def build_base_menu(window):
         menu.add_cascade(menu=apple_menu)
 
     return menu
+
+def add_species(scientific_name):
+    """
+    Adds a new species to the Species table if it does not already exist.
+    Args:
+        scientific_name (str): The scientific name of the species to add.
+    """
+    data = ["Class", "Scientific_Name", "Common_Name", "Domesticated"]
+
+    pop_up_window = tk.Toplevel()
+    pop_up_window.title("Add Species")
+
+    for i, value in enumerate(data):
+        label = tk.Label(pop_up_window, text = f"{value}:")
+        label.grid(row=0, column=i, padx=10, pady=5)
+        entry = tk.Entry(pop_up_window, width=30)
+        if value == 'Scientific_Name':
+            entry.insert(0, scientific_name)
+
+        entry.grid(row=1, column=i, padx=10, pady=5)
+
+    def save_changes():
+        row = pop_up_window.grid_slaves(row=1)
+        row.reverse()
+        new_values = conditions_check(1, row, "Species")
+        if type(new_values) == str:
+            messagebox.showerror("Error", new_values)
+            return
+        
+        query = f'''INSERT INTO
+                                species
+                                ({', '.join(data)})
+                            VALUES
+                                ({', '.join(['%s'] * len(data))})'''
+        
+        error = add_row(query, new_values)
+        if error:
+            messagebox.showerror("Error", f"An error occurred while adding the entry: {error}, please contact Nat")
+        
+        pop_up_window.destroy()
+
+    menu = tk.Menu(pop_up_window)
+    menu.add_command(label="Save", command=save_changes)
+    menu.add_command(label="Cancel", command= pop_up_window.destroy)
+    pop_up_window.config(menu=menu)
+
+    pop_up_window.grab_set()
+    pop_up_window.wait_window()
+
+    
+
+
+
