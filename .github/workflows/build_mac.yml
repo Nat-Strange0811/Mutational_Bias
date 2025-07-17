@@ -32,10 +32,10 @@ jobs:
       - name: Test app entry point
         run: python3 main.py --test
 
-      - name: Compress app as ZIP (preserve structure & permissions)
-        run: |
-          cd dist
-          zip -r -y "Mutational Bias-macOS.zip" "Mutational Bias.app"
+        - name: Compress app as ZIP (macOS-safe)
+          run: |
+            cd dist
+            ditto -c -k --keepParent "Mutational Bias.app" "Mutational Bias-macOS.zip"
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v2
