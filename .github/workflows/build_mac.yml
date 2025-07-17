@@ -32,6 +32,10 @@ jobs:
       - name: Test app entry point
         run: python3 main.py --test
 
+      - name: Sign the app (ad-hoc)
+        run: |
+          codesign --deep --force --sign - "dist/Mutational Bias.app"
+
       - name: Compress app as ZIP (macOS-safe)
         run: |
           cd dist
